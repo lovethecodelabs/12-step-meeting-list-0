@@ -213,4 +213,40 @@ get_header();
 	</div>
 </div>
 <?php 
+
+
+function getDay($inputdaynumber){
+    $dowMap = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+    $dow_numeric = $inputdaynumber;
+    return $dowMap[$dow_numeric];
+}
+?>
+<script type="application/ld+json"> 
+{
+"@context": "http://schema.org","@type": "Event",
+"name": "<?php $get_day=getDay($meeting->day); echo tsml_format_name($meeting->post_title, $meeting->types); ?> ALCOHOLICS ANONYMOUS MEETING",
+    "description": "AA Meeting (<?php foreach ($meeting->types as $type) { echo $type.' '; }?>) in the Harbor Area, Southern CA","image": "http://hacoaa.org/images/lh300x200tri.png", 
+
+  
+    "url" : "https://hacoaa.org/meetings/<?php echo $post->post_name; ?>",
+    "endDate": "<?php $d2 = strtotime("this $get_day"); echo date( "Y-m-d", $d2 ); echo 'T'.$meeting->end_time; ?>",
+    "startDate": "<?php $d1 = strtotime("this $get_day"); echo date( "Y-m-d", $d1 ); echo 'T'.$meeting->time; ?>",
+	"location": { 
+		"@type": "Place",
+		"name": "<?php echo $meeting->location; ?>",
+		"address": "<?php echo $meeting->formatted_address; ?>"
+	}
+    }
+</script>
+<?php
+$meetingtime=$meeting->time; 
+$meetingtimeend=$meeting->end_time;
+$meetingtime=str_replace(":","",$meetingtime);
+$meetingtimeend=str_replace(":","",$meetingtimeend);
+$mydate=date("Ymd");
+$mydate=date("l");
+if ($myday!=getDay($meeting->day)){
+    $mydate=date( "Ymd", $d1 );
+}
+<?php 
 get_footer();
