@@ -440,7 +440,7 @@ function tsml_ajax_import() {
 			$location_id = $locations[$formatted_address];
 		} else {
 			$location_id = wp_insert_post(array(
-				'post_title'	=> $meeting['location'],
+				'post_title'		=> $meeting['location'],
 				'post_type'		=> 'tsml_location',
 				'post_content'	=> $meeting['location_notes'],
 				'post_status'	=> 'publish',
@@ -453,15 +453,17 @@ function tsml_ajax_import() {
 		}
 				
 		//save meeting to this location
-		$meeting_id = wp_insert_post(array(
-			'post_title'		=> $meeting['name'],
+		$options = array(
+			'post_title'			=> $meeting['name'],
 			'post_type'			=> 'tsml_meeting',
 			'post_status'		=> 'publish',
 			'post_parent'		=> $location_id,
 			'post_content'		=> trim($meeting['notes']), //not sure why recursive trim not catching this
 			'post_modified'		=> $meeting['post_modified'],
 			'post_modified_gmt'	=> $meeting['post_modified_gmt'],
-		));
+		);
+		if (!empty($meeting['slug'])) $options['post_name'] = $meeting['slug'];
+		$meeting_id = wp_insert_post($options);
 		
 		//add day and time(s) if not appointment meeting
 		if (!empty($meeting['time']) && (!empty($meeting['day']) || (string) $meeting['day'] === '0')) {
@@ -522,6 +524,55 @@ function tsml_ajax_import() {
 		),
 	));
 }
+
+
+    // AJAX part of closest meetings widget
+function display_closest_meetings( $content ) {
+        global $wpdb;
+        $lat=$_GET['lat'];
+        $long=$_GET['long'];
+        $day=$_GET['today'];
+        
+        date_default_timezone_set("America/Los_Angeles");
+    	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+
+            // Just for today
+            if ($day=='today'){
+                $today = date('w');
+            } else { 
+                $today = intval($day);
+            }
+            
+            $meetings = tsml_get_meetings(array('day' => intval($today)));
+
+            $countMeetings = count($meetings);
+            for ($i = 0; $i < $countMeetings; $i++) {
+                // http://www.movable-type.co.uk/scripts/latlong.html
+                $meetings[$i]['distance'] = sqrt(pow(abs(floatval($meetings[$i]['latitude'])) - abs(floatval($lat)),2)+pow(abs(floatval($meetings[$i]['longitude'])) - abs(floatval($long)),2));
+            }
+        
+            $dist = array();
+            foreach ($meetings as $key => $row)
+            {
+                if ( $row['day'] == $today ) {
+                    $dist[$key] = $row['distance']." ; " .$row['name']." ; " .$row['time_formatted']." ; ".$row['location']." ; ".$row['formatted_address']." ; ".$row['url']." ; ".$row['location_url']." ; ".$row['latitude']." ; ".$row['longitude']." ; ".$lat." ; ".$long;
+                } 
+            }
+            array_multisort($dist, SORT_ASC, $meetings); 
+
+            $distFin = array($dist[0], $dist[1], $dist[2], $dist[3], $dist[4]); 
+
+            
+            $json = json_encode($distFin); 
+    	    echo $json;
+    	    die();
+	    }
+}
+add_action( 'wp_ajax_nopriv_display_closest_meetings', 'display_closest_meetings' );
+add_action( 'wp_ajax_display_closest_meetings', 'display_closest_meetings' );
+
+
+
 
 //api ajax function
 //used by theme, web app, mobile app
