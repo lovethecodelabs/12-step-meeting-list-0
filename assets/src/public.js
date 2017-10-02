@@ -83,9 +83,6 @@ jQuery(function($){
 		
 		//set page title
 		updateTitle();
-	
-		//dropdownify dropdowns (manually, to avoid conflicts)
-		$('.tsml-dropdown-toggle').dropdown();
 		
 		//if already searching, mark results
 		var $search_field = $('#meetings #search input[name=query]');
@@ -232,6 +229,9 @@ jQuery(function($){
 			
 			//only one search mode
 			$('#mode li').removeClass('active');
+			
+			//clear search when changing modes
+			$search_field.val('');
 
 			//remove meeting results
 			$('#meetings').addClass('empty');
