@@ -291,7 +291,7 @@ class TSML_Widget_Closest extends WP_Widget {
 		$link = get_post_type_archive_link('tsml_meeting');
 		$link .= ((strpos($link, '?') === false) ? '?' : '&') . 'tsml-mode=me';
 		$link = "/meetings?tsml-mode=me";
-		echo '<select id="geolocate" onchange="closestmeetings();"><option value="today">today</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select><table class="tsml_closest_meetings table table-striped" id="dataxhr"></table><p style="margin: 20px auto; width: 100%; text-align: center;" id="closest"><a href="/meetings/?tsml-day=any&tsml-distance=5&tsml-mode=me&tsml-view=map" style="margin: 0 auto 36px auto;">all meetings near me</a></p><br><br>';
+		echo '<select id="geolocate" onchange="closestmeetings();"><option value="today">today</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select><table class="tsml_closestmeetings table table-striped" id="dataxhr"></table><p style="margin: 20px auto; width: 100%; text-align: center;" id="closest"><a href="/meetings/?tsml-day=any&tsml-distance=5&tsml-mode=me&tsml-view=map" style="margin: 0 auto 36px auto;">all meetings near me</a></p><br><br>';
 		echo $args['after_widget'];
 		
 	    }
@@ -330,10 +330,10 @@ class TSML_Widget_Closest extends WP_Widget {
 	}
 }
 
-add_action( 'wp_enqueue_scripts', 'ajax_closest_enqueue_scripts' );
-function ajax_closest_enqueue_scripts() {
-	wp_enqueue_script( 'love', plugins_url( 'love.js', __FILE__ ), array('jquery'), '1.0', true );
-	wp_localize_script( 'love', 'displayclosestmeetings', array(
+add_action( 'wp_enqueue_scripts', 'closest_enqueue_scripts' );
+function closest_enqueue_scripts() {
+	wp_enqueue_script( 'closestmeetings', '/wp-content/plugins/12-step-meeting-list/assets/js/closestmeetings.min.js', array('jquery'), '1.0', true );
+	wp_localize_script( 'closestmeetings', 'displayclosestmeetings', array(
 		'ajax_url' => admin_url( 'admin-ajax.php' )
 	));
 }

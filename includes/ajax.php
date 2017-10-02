@@ -525,8 +525,7 @@ function tsml_ajax_import() {
 	));
 }
 
-
-    // AJAX part of closest meetings widget
+// AJAX part of closest meetings widget
 function display_closest_meetings( $content ) {
         global $wpdb;
         $lat=$_GET['lat'];
@@ -547,7 +546,6 @@ function display_closest_meetings( $content ) {
 
             $countMeetings = count($meetings);
             for ($i = 0; $i < $countMeetings; $i++) {
-                // http://www.movable-type.co.uk/scripts/latlong.html
                 $meetings[$i]['distance'] = sqrt(pow(abs(floatval($meetings[$i]['latitude'])) - abs(floatval($lat)),2)+pow(abs(floatval($meetings[$i]['longitude'])) - abs(floatval($long)),2));
             }
         
@@ -562,7 +560,6 @@ function display_closest_meetings( $content ) {
 
             $distFin = array($dist[0], $dist[1], $dist[2], $dist[3], $dist[4]); 
 
-            
             $json = json_encode($distFin); 
     	    echo $json;
     	    die();
@@ -570,9 +567,6 @@ function display_closest_meetings( $content ) {
 }
 add_action( 'wp_ajax_nopriv_display_closest_meetings', 'display_closest_meetings' );
 add_action( 'wp_ajax_display_closest_meetings', 'display_closest_meetings' ); 
-
-
-
 
 //api ajax function
 //used by theme, web app, mobile app
