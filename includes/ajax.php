@@ -555,7 +555,7 @@ function display_closest_meetings( $content ) {
             foreach ($meetings as $key => $row)
             {
                 if ( $row['day'] == $today ) {
-                    $dist[$key] = $row['distance']." ; " .$row['name']." ; " .$row['time_formatted']." ; ".$row['location']." ; ".$row['formatted_address']." ; ".$row['url']." ; ".$row['location_url']." ; ".$row['latitude']." ; ".$row['longitude']." ; ".$lat." ; ".$long;
+                    $dist[$key] = array('distance'=>tsml_distance($lat,$long,$row['latitude'],$row['longitude']),'name'=>$row['name'],'time_formatted'=>$row['time_formatted'],'location'=>$row['location'],'formatted_address'=>$row['formatted_address'],'url'=>$row['url'],'location_url'=>$row['location_url'],'latitude'=>$row['latitude'],'longitude'=>$row['longitude'],'time'=>$row['time']);
                 } 
             }
             array_multisort($dist, SORT_ASC, $meetings); 
@@ -569,7 +569,7 @@ function display_closest_meetings( $content ) {
 	    }
 }
 add_action( 'wp_ajax_nopriv_display_closest_meetings', 'display_closest_meetings' );
-add_action( 'wp_ajax_display_closest_meetings', 'display_closest_meetings' );
+add_action( 'wp_ajax_display_closest_meetings', 'display_closest_meetings' ); 
 
 
 

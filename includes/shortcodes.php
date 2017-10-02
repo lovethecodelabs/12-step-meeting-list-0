@@ -54,10 +54,3 @@ function tsml_next_meetings_sort($a, $b) {
 	//return standard compare	
 	return tsml_sort_meetings($a, $b);
 }*/
-
-
-// widget/shortcode part
-function display_closest_meetings_client( $content ) {
-    return  '<a class="closest-meeting-button" href="' . admin_url( 'admin-ajax.php?action=display_closest_meetings&lat=' . $_POST['lat'] . '&long='.$_POST['long']).'"  >give love</a>';
-}
-add_shortcode('tsml_closest', 'display_closest_meetings_client');
